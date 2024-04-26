@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inline Traffic Light</title>
+  <style>
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .traffic-light-container {
+      display: flex;
+      flex-direction: column;
+      align-items: left;
+      margin-right: 20px;
+    }
+
+    .traffic-light {
+      width: 100px;
+      height: 350px;
+      background-color: Black;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+    }
+    
+    .light {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #666;
+    }
+
+    .red.active {
+      background-color: red;
+    }
+
+    .yellow.active {
+      background-color: yellow;
+    }
+
+    .green.active {
+      background-color: green;
+    }
+    
+    .timer {
+      margin-top: 20px;
+      font-size: 25px;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="traffic-light-container">
+      <div class="traffic-light">
+        <div class="light red"></div>
+        <div class="light yellow"></div>
+        <div class="light green"></div>
+      </div>
+      <div class="timer" id="timer">Next change in 0 seconds</div>
+    </div>
+  </div>
+  <script>
+    const lights = document.querySelectorAll('.light');
+
+    function switchLight(color) {
+      lights.forEach(light => {
+        light.classList.remove('active');
+      });
+      
+      switch(color) {
+        case 'red':
+          lights[0].classList.add('active');
+          break;
+        case 'yellow':
+          lights[1].classList.add('active');
+          break;
+        case 'green':
+          lights[2].classList.add('active');
+          break;
+      }
+    }
+
+    function updateTimer(time) {
+      const timerElement = document.getElementById('timer');
+      timerElement.textContent = 'Next change in ' + time + ' seconds';
+    }
+
+    function randomInterval(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function changeLight(color) {
+      switchLight(color);
+      updateTimer('00');
+    }
+
+    function changeLightRandomly() {
+      const colors = ['red', 'yellow', 'green'];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      switchLight(randomColor);
+      let interval = randomInterval(6, 9); // Random interval between 6 and 9 seconds
+      updateTimer(interval);
+      
+      const timer = setInterval(() => {
+        interval -= 1;
+        updateTimer(interval);
+        if (interval <= 0) {
+          clearInterval(timer);
+          changeLightRandomly();
+        }
+      }, 1000);
+    }
+
+    changeLightRandomly();
+  </script>
+</body>
+</html>
